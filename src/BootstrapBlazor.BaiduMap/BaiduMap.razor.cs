@@ -18,7 +18,7 @@ namespace BootstrapBlazor.Components;
 /// </summary>
 public partial class BaiduMap : IAsyncDisposable
 {
-    [Inject] IJSRuntime? JS { get; set; }
+    [Inject][NotNull] IJSRuntime? JS { get; set; }
     [Inject] IConfiguration? config { get; set; }
 
     /// <summary>
