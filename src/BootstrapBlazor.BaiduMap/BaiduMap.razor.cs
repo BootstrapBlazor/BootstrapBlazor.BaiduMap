@@ -62,7 +62,7 @@ public partial class BaiduMap : IAsyncDisposable
         if (firstRender)
         {
             key = BaiduKey ?? (config != null ? config["BaiduKey"] : null) ?? "abcd";
-            module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js");
+            module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             InstanceGeo = DotNetObjectReference.Create(this);
             while (!(await Init()))
             {
