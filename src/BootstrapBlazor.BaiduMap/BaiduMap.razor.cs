@@ -7,9 +7,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
-using System;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace BootstrapBlazor.Components;
@@ -18,8 +15,8 @@ namespace BootstrapBlazor.Components;
 /// </summary>
 public partial class BaiduMap : IAsyncDisposable
 {
-    [Inject][NotNull] IJSRuntime? JS { get; set; }
-    [Inject] IConfiguration? config { get; set; }
+    [Inject][NotNull] private IJSRuntime? JS { get; set; }
+    [Inject] private IConfiguration? config { get; set; }
 
     /// <summary>
     /// 获得/设置 错误回调方法
@@ -61,7 +58,7 @@ public partial class BaiduMap : IAsyncDisposable
     {
         if (firstRender)
         {
-            key = BaiduKey ?? (config != null ? config["BaiduKey"] : null) ?? "abcd";
+            key = BaiduKey ?? (config?["BaiduKey"]) ?? "abcd";
             module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             InstanceGeo = DotNetObjectReference.Create(this);
             while (!(await Init()))
