@@ -15,7 +15,7 @@ namespace BootstrapBlazor.Components;
 /// </summary>
 public partial class BaiduMap : IAsyncDisposable
 {
-    [Inject][NotNull] private IJSRuntime? JS { get; set; }
+    [Inject][NotNull] private IJSRuntime? JSRuntime { get; set; }
     [Inject] private IConfiguration? config { get; set; }
 
     /// <summary>
@@ -59,7 +59,7 @@ public partial class BaiduMap : IAsyncDisposable
         if (firstRender)
         {
             key = BaiduKey ?? (config?["BaiduKey"]) ?? "abcd";
-            Module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+            Module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             InstanceGeo = DotNetObjectReference.Create(this);
             while (!(await Init()))
             {
