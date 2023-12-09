@@ -49,7 +49,7 @@ public partial class BaiduMap : IAsyncDisposable
     [Parameter]
     public Func<BaiduItem, Task>? OnResult { get; set; }
 
-    private IJSObjectReference? module;
+    private IJSObjectReference? Module { get; set; }
     private DotNetObjectReference<BaiduMap>? InstanceGeo { get; set; }
 
     private string key = String.Empty;
@@ -59,21 +59,21 @@ public partial class BaiduMap : IAsyncDisposable
         if (firstRender)
         {
             key = BaiduKey ?? (config?["BaiduKey"]) ?? "abcd";
-            module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+            Module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             InstanceGeo = DotNetObjectReference.Create(this);
             while (!(await Init()))
             {
                 await Task.Delay(500);
             }
-            //await module!.InvokeVoidAsync("initMaps");
+            //await Module!.InvokeVoidAsync("initMaps");
         }
     }
 
-    public async Task<bool> Init() => await module!.InvokeAsync<bool>("addScript", new object?[] { key, ID, null, null, null });
+    public async Task<bool> Init() => await Module!.InvokeAsync<bool>("addScript", new object?[] { key, ID, null, null, null });
 
-    public async Task ResetMaps() => await module!.InvokeVoidAsync("resetMaps", ID);
+    public async Task ResetMaps() => await Module!.InvokeVoidAsync("resetMaps", ID);
 
-    public async Task OnBtnClick(string btn) => await module!.InvokeVoidAsync(btn);
+    public async Task OnBtnClick(string btn) => await Module!.InvokeVoidAsync(btn);
 
     /// <summary>
     /// 获取定位
@@ -82,7 +82,7 @@ public partial class BaiduMap : IAsyncDisposable
     {
         try
         {
-            await module!.InvokeVoidAsync("geolocation", InstanceGeo);
+            await Module!.InvokeVoidAsync("geolocation", InstanceGeo);
         }
         catch (Exception e)
         {
@@ -111,10 +111,10 @@ public partial class BaiduMap : IAsyncDisposable
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        if (module is not null)
+        if (Module is not null)
         {
-            //await module.InvokeVoidAsync("destroy", Options);
-            await module.DisposeAsync();
+            //await Module.InvokeVoidAsync("destroy", Options);
+            await Module.DisposeAsync();
         }
     }
 
