@@ -15,7 +15,10 @@ namespace BootstrapBlazor.Components;
 /// </summary>
 public partial class BaiduMap : IAsyncDisposable
 {
-    [Inject][NotNull] private IJSRuntime? JSRuntime { get; set; }
+    [Inject]
+    [NotNull]
+    private IJSRuntime? JSRuntime { get; set; }
+
     [Inject] private IConfiguration? config { get; set; }
 
     /// <summary>
@@ -50,7 +53,7 @@ public partial class BaiduMap : IAsyncDisposable
     public Func<BaiduItem, Task>? OnResult { get; set; }
 
     private IJSObjectReference? Module { get; set; }
-    private DotNetObjectReference<BaiduMap>? InstanceGeo { get; set; }
+    private DotNetObjectReference<BaiduMap>? Instance { get; set; }
 
     private string key = String.Empty;
 
@@ -60,7 +63,7 @@ public partial class BaiduMap : IAsyncDisposable
         {
             key = BaiduKey ?? (config?["BaiduKey"]) ?? "abcd";
             Module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BootstrapBlazor.BaiduMap/lib/baidu/baidumap.js" + "?v=" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
-            InstanceGeo = DotNetObjectReference.Create(this);
+            Instance = DotNetObjectReference.Create(this);
             while (!(await Init()))
             {
                 await Task.Delay(500);
@@ -82,7 +85,7 @@ public partial class BaiduMap : IAsyncDisposable
     {
         try
         {
-            await Module!.InvokeVoidAsync("geolocation", InstanceGeo);
+            await Module!.InvokeVoidAsync("geolocation", Instance);
         }
         catch (Exception e)
         {
